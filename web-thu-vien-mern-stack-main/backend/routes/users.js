@@ -58,7 +58,7 @@ router.post("/adduser", async (req, res) => {
         }
     }
     else {
-        return res.status(403).json("You dont have permission to delete a book!");
+        return res.status(403).json("You dont have permission to add a user!");
     }
 })
 
