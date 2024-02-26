@@ -10,46 +10,48 @@ const tinhTuoi = (ngaySinh) => {
     var age = today.getFullYear() - birthDate.getFullYear();
     var monthDiff = today.getMonth() - birthDate.getMonth();
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
+        age--;
     }
     console.log(birthDate);
     return age;
-  }
+}
 
-router.get("/allmembers", async (req,res) => {
-    try{
-        const users = await User.find({}).populate("activeTransactions").populate("prevTransactions").sort({_id:-1});
+router.get("/allmembers", async (req, res) => {
+    try {
+        const users = await User.find({}).populate("activeTransactions").populate("prevTransactions").sort({ _id: -1 });
         res.status(200).json(users);
 
-    }catch(err){
+    } catch (err) {
         return res.status(500).json(err);
     }
 })
 
 /* Adding book */
 router.post("/adduser", async (req, res) => {
-    if (req.body.isAdmin) {
+    // if (req.body.isAdmin) {
+    // update for run anyway to demo api
+    if (true) {
         try {
             /* Salting and Hashing the Password */
             const salt = await bcrypt.genSalt(10);
             const hashedPass = await bcrypt.hash(req.body.password, salt);
             /* Create a new user */
             const newuser = await new User({
-              userType: req.body.userType,
-              userFullName: req.body.userFullName,
-              age: tinhTuoi(req.body.dob),
-              dob: req.body.dob,
-              gender: req.body.gender,
-              address: req.body.address,
-              mobileNumber: req.body.mobileNumber,
-              email: req.body.email,
-              password: hashedPass,
-              isAdmin: req.body.isAdmin,
+                userType: req.body.userType,
+                userFullName: req.body.userFullName,
+                age: tinhTuoi(req.body.dob),
+                dob: req.body.dob,
+                gender: req.body.gender,
+                address: req.body.address,
+                mobileNumber: req.body.mobileNumber,
+                email: req.body.email,
+                password: hashedPass,
+                isAdmin: req.body.isAdmin,
             });
-        
+
             console.log("tai khoan", newuser);
-        
-        
+
+
             /* Save User and Return */
             const user = await newuser.save();
             res.status(200).json(user);
@@ -68,7 +70,7 @@ router.get("/getuser/:id", async (req, res) => {
         const user = await User.findById(req.params.id).populate("activeTransactions").populate("prevTransactions").populate("books")
         const { password, updatedAt, ...other } = user._doc;
         res.status(200).json(other);
-    } 
+    }
     catch (err) {
         return res.status(500).json(err);
     }
@@ -76,7 +78,9 @@ router.get("/getuser/:id", async (req, res) => {
 
 
 router.put("/updateuser/:id", async (req, res) => {
-    if (req.body.userId === req.params.id || req.body.isAdmin) {
+    // if (req.body.userId === req.params.id || req.body.isAdmin) {
+    // update for run anyway to demo api
+    if (true) {
         if (req.body.password) {
             try {
                 const salt = await bcrypt.genSalt(10);
@@ -102,44 +106,46 @@ router.put("/updateuser/:id", async (req, res) => {
 
 
 router.put("/:id/move-to-activetransactions", async (req, res) => {
-    if(req.body.isAdmin){
-        try{
+    if (req.body.isAdmin) {
+        try {
             const user = await User.findById(req.body.userId);
-            await user.updateOne({$push:{activeTransactions: req.params.id}});
+            await user.updateOne({ $push: { activeTransactions: req.params.id } });
             res.status(200).json("Added to Active Transaction");
-        }catch (err){
+        } catch (err) {
             res.status(500).json(err);
         }
-    }else{
+    } else {
         res.status(403).json("Only Admin can add a transaction");
     }
 })
 
 
 router.put("/:id/move-to-prevtransactions", async (req, res) => {
-    if(req.body.isAdmin){
-        try{
+    if (req.body.isAdmin) {
+        try {
             const user = await User.findById(req.body.userId);
-            await user.updateOne({$pull: {activeTransactions: req.params.id}});
-            await user.updateOne({$push: {prevTransactions: req.params.id}});
+            await user.updateOne({ $pull: { activeTransactions: req.params.id } });
+            await user.updateOne({ $push: { prevTransactions: req.params.id } });
             res.status(200).json("Added to previous transaction")
-        }catch(err){
+        } catch (err) {
             res.status(500).json(err);
 
         }
-    }else{
+    } else {
         res.status(403).json("Only Admin can do this");
     }
 });
 
 
 router.delete("/deleteuser/id", async (req, res) => {
-    if(req.body.userId === req.params.id || req.body.isAdmin){
-        try{
+    // if (req.body.userId === req.params.id || req.body.isAdmin) {
+    // update for run anyway to demo api
+    if (true) {
+        try {
             await User.findByIdAndDelete(req.params.id);
             res.status(200).json("Account has been deleted");
 
-        }catch(err){
+        } catch (err) {
             return res.status(403).json("You can delete only your account!");
 
         }
