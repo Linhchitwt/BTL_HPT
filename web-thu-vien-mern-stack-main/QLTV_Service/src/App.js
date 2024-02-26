@@ -43,7 +43,7 @@ const App = () => {
 
             <List.Item.Meta
               avatar={<Text type="success" >[Get]</Text>}
-              title={<a href="http://localhost:5000/api/users/adduser">http://localhost:5000/api/users/adduser</a>}
+              title={<a href="http://localhost:5000/api/users/getuser">http://localhost:5000/api/users/getuser/:id</a>}
               description={<><div>
                 This api use for getting information of user
               </div>
@@ -150,7 +150,7 @@ const App = () => {
                     onChange={() => { }}
                     value={idUserDeleteResponse}
                     placeholder="json data return"
-                    style={{ height: 200, resize: 'none' }}
+                    // style={{ height: 200, resize: 'none' }}
                   />
                 </div>
               </>}
