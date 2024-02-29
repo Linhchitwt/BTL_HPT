@@ -1,6 +1,7 @@
 import express from "express";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
+import UserDao from "../DAO/user.dao.js";
 
 const router = express.Router()
 
@@ -18,7 +19,7 @@ const tinhTuoi = (ngaySinh) => {
 
 router.get("/allmembers", async (req, res) => {
     try {
-        const users = await User.find({}).populate("activeTransactions").populate("prevTransactions").sort({ _id: -1 });
+        const users = await UserDao.getAllUsers();
         res.status(200).json(users);
 
     } catch (err) {
@@ -36,24 +37,11 @@ router.post("/adduser", async (req, res) => {
             const salt = await bcrypt.genSalt(10);
             const hashedPass = await bcrypt.hash(req.body.password, salt);
             /* Create a new user */
-            const newuser = await new User({
-                userType: req.body.userType,
-                userFullName: req.body.userFullName,
+            const user = await UserDao.createUser({
+                ...req.body,
                 age: tinhTuoi(req.body.dob),
-                dob: req.body.dob,
-                gender: req.body.gender,
-                address: req.body.address,
-                mobileNumber: req.body.mobileNumber,
-                email: req.body.email,
                 password: hashedPass,
-                isAdmin: req.body.isAdmin,
             });
-
-            console.log("tai khoan", newuser);
-
-
-            /* Save User and Return */
-            const user = await newuser.save();
             res.status(200).json(user);
         } catch (err) {
             console.log(err);
@@ -67,7 +55,7 @@ router.post("/adduser", async (req, res) => {
 
 router.get("/getuser/:id", async (req, res) => {
     try {
-        const user = await User.findById(req.params.id).populate("activeTransactions").populate("prevTransactions").populate("books")
+        const user = await UserDao.getUserById(req.params.id);
         const { password, updatedAt, ...other } = user._doc;
         res.status(200).json(other);
     }
@@ -90,9 +78,7 @@ router.put("/updateuser/:id", async (req, res) => {
             }
         }
         try {
-            const user = await User.findByIdAndUpdate(req.params.id, {
-                $set: req.body,
-            });
+            const user = await UserDao.updateUser(req.params.id, req.body);
             res.status(200).json("Account has been updated");
         } catch (err) {
             return res.status(500).json(err);
@@ -142,7 +128,7 @@ router.delete("/deleteuser/id", async (req, res) => {
     // update for run anyway to demo api
     if (true) {
         try {
-            await User.findByIdAndDelete(req.params.id);
+            await UserDao.deleteUser(req.params.id);
             res.status(200).json("Account has been deleted");
 
         } catch (err) {
