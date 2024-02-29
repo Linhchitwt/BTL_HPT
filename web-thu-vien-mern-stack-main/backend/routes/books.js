@@ -88,7 +88,8 @@ router.get("/search/:keyword", async (req, res) => {
 
 /* Adding book */
 router.post("/addbook", async (req, res) => {
-    if (req.body.isAdmin) {
+    // if (req.body.isAdmin) {
+    if (true) {
         try {
             const newbook = await new Book({
                 bookName: req.body.bookName,
@@ -118,7 +119,8 @@ router.post("/addbook", async (req, res) => {
 
 /* Addding book */
 router.put("/updatebook/:id", async (req, res) => {
-    if (req.body.isAdmin) {
+    // if (req.body.isAdmin) {
+    if (true) {
         try {
             await Book.findByIdAndUpdate(req.params.id, {
                 $set: req.body,

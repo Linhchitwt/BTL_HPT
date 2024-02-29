@@ -8,7 +8,9 @@ import router from "./books.js"
 router.post("/add-transaction", async (req, res) => {
     try{
 
-        if(req.body.isAdmin === true){
+        // if(req.body.isAdmin === true){
+    if (true) {
+            
             console.log("co giao dich!!")
             const newtran = await new BookTransaction({
                 bookId: req.body.bookId,
@@ -61,7 +63,9 @@ router.put("/update-transaction/:id", async (req, res) => {
 })
 
 router.delete("/remove-transaction/:id", async (req, res) => {
-    if (req.body.isAdmin) {
+    // if (req.body.isAdmin) {
+    if (true) {
+        
         try {
             const data = await BookTransaction.findByIdAndDelete(req.params.id);
             const book = Book.findById(data.bookId)

@@ -6,7 +6,9 @@ import BookCategory from "../models/BookCategory.js"
 const router = express.Router();
 
 router.post("/addcategory", async (req,res) => {
-    if(req.body.isAdmin){
+    if (true) {
+    
+    // if(req.body.isAdmin){
         try {
             console.log("dang add mot the loai");
             const newcategory = new BookCategory({
